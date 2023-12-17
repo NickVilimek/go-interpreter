@@ -1,8 +1,18 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"go-interpreter/repl"
+	"os"
+	"os/user"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	user, err := user.Current()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Welcome, %s! This an c like interpreter repl \n", user.Username)
+	repl.Start(os.Stdin, os.Stdout)
 
 }
