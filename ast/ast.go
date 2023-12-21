@@ -45,7 +45,7 @@ func (p *Program) TokenLiteral() string {
 	}
 }
 
-/* Let Expression & Statement Stuff */
+/* Statements */
 
 type LetStatement struct {
 	Token token.Token
@@ -73,17 +73,6 @@ func (ls *LetStatement) String() string {
 
 }
 
-type Identifier struct {
-	Token token.Token // the token.IDENT token Value string
-	Value string
-}
-
-func (i *Identifier) expressionNode()      {}
-func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
-func (i *Identifier) String() string       { return i.Value }
-
-/* Return Expression */
-
 type ReturnStatement struct {
 	Token       token.Token
 	ReturnValue Expression
@@ -104,8 +93,6 @@ func (rs *ReturnStatement) String() string {
 	return out.String()
 }
 
-/* "Statement Expression" (i.e. "x + 10" w no return or let) */
-
 type ExpressionStatement struct {
 	Token      token.Token
 	Expression Expression
@@ -121,4 +108,43 @@ func (es *ExpressionStatement) String() string {
 		return es.Expression.String()
 	}
 	return ""
+}
+
+/* Expressions */
+
+type Identifier struct {
+	Token token.Token // the token.IDENT token Value string
+	Value string
+}
+
+func (i *Identifier) expressionNode()      {}
+func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
+func (i *Identifier) String() string       { return i.Value }
+
+type IntegerLiteral struct {
+	Token token.Token // the token.INT token Value string
+	Value int64
+}
+
+func (i *IntegerLiteral) expressionNode()      {}
+func (i *IntegerLiteral) TokenLiteral() string { return i.Token.Literal }
+func (i *IntegerLiteral) String() string       { return i.Token.Literal }
+
+type PrefixExpression struct {
+	Token    token.Token
+	Operator string
+	Right    Expression
+}
+
+func (pe *PrefixExpression) expressionNode()      {}
+func (pe *PrefixExpression) TokenLiteral() string { return pe.Token.Literal }
+func (pe *PrefixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(pe.Operator)
+	out.WriteString(pe.Right.String())
+	out.WriteString(")")
+
+	return out.String()
 }
